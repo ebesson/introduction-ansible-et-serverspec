@@ -1,0 +1,30 @@
+= Introduction à Ansible et Serverspec
+Etienne BESSON
+v1.0, Juin 41, 2014
+:title: Introduction à Ansible et Serverspec
+:website: http://ebesson.github.io
+:slidesurl: https://github.com/ebesson/introduction-ansible-et-serverspec
+:imagesdir: images
+:backend: dzslides
+:dzslides-style: stormy
+:dzslides-transition: fade
+:dzslides-fonts: family=Yanone+Kaffeesatz:400,700,200,300&family=Cedarville+Cursive
+:dzslides-highlight: monokai
+:source-highlighter: highlightjs
+
+== \\
+
+*Objectifs :*
+
+[.incremental]
+* - Comprendre les lambdas
+* - Comprendre les streams
+
+[NOTE]
+[role="speaker"]
+====
+* Bla bla
+====
+
+[.topic.ending]
+== Questions
