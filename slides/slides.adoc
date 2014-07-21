@@ -1,29 +1,293 @@
-= Introduction à Ansible et Serverspec
+= Introduction à _Ansible_ et _Serverspec_
 Etienne BESSON
-v1.0, Juin 41, 2014
-:title: Introduction à Ansible et Serverspec
-:website: http://ebesson.github.io
-:slidesurl: https://github.com/ebesson/introduction-ansible-et-serverspec
+include::attributes.adoc[]
 :imagesdir: images
-:backend: dzslides
-:dzslides-style: stormy
-:dzslides-transition: fade
-:dzslides-fonts: family=Yanone+Kaffeesatz:400,700,200,300&family=Cedarville+Cursive
-:dzslides-highlight: monokai
-:source-highlighter: highlightjs
+:experimental:
+:toc2:
+:sectanchors:
+:idprefix:
+:idseparator: -
+:icons: font
+:source-highlighter: coderay
 
-== \\
+[.topic.source]
+== Agenda
 
-*Objectifs :*
-
+====
 [.incremental]
-* - Comprendre les lambdas
-* - Comprendre les streams
+* [icon-note]'{zwsp}' Ansible
+* [icon-note]'{zwsp}' Serverspec
+* [icon-note]'{zwsp}' Allez plus loin
+====
 
 [NOTE]
 [role="speaker"]
 ====
 * Bla bla
+====
+
+== !
+
+[.topic.intro]
+
+image::6819858446_f69c2caa52.jpg[width=500]
+....
+flickr.com/photos/unephotos/6819858446
+.... 
+
+[NOTE]
+[role="speaker"]
+====
+* Bla bla
+====
+
+[.topic.source]
+== Pour le provisionning et l'administration
+
+Utilisation de _scripts shell_ couplés au _protocle SSH_
+
+image::ssh.jpg[height=264]
+....
+frans-web.com
+....
+
+[NOTE]
+[role="speaker"]
+====
+* Pour provisionner une machine machine distante
+* Pour administrer une machine machine distante
+* Pour administrer un parc de serveur : tmux synchronisation de commandes sur différents serveurs
+====
+
+== \\
+
+image::Borat_in_Cologne.jpg[]
+....
+frans-web.com
+....
+
+[NOTE]
+[role="speaker"]
+====
+* C'est une blague
+====
+
+[.topic.source]
+== Les problèmes
+
+[.incremental]
+* - Complexe
+* - Robustesse
+* - Idempotence
+
+[NOTE]
+[role="speaker"]
+====
+* Complexe : maintenance souvent pas évident, scripts non commentés
+* Robustesse : gestion des erreurs, validaton des paramètres entrées, etc...
+* Non idempotence : on doit toujours avoir le système dans le même état si on appel les scripts plusieurs fois
+====
+
+[.topic.source]
+== Les solutions
+
+[.incremental]
+* - système à base d'agent ou de démon
+* - système qui maintient l'état du serveur dans une base de données
+
+[NOTE]
+[role="speaker"]
+====
+* système à base d'agent  : on déploie un logiciel sur le serveur 
+* système avec base de donnée : problèmatique de la base qui crash, migration
+====
+
+[.topic.source]
+== De quoi a-t-on besoin ?
+
+[.statement]
+D'une solution *simple* et +
+compréh *Ansible*
+
+[NOTE]
+[role="speaker"]
+====
+* solution basées sur les clés SSH et sans base de données 
+====
+
+[.topic.source]
+== Sous le capot
+
+[.incremental]
+* [icon-note]'{zwsp}' Python
+* [icon-note]'{zwsp}' Paramiko
+* [icon-note]'{zwsp}' PyYaml
+* [icon-note]'{zwsp}' Jinja2
+
+[NOTE]
+[role="speaker"]
+====
+* Python version supérieure ou égale à 2.6
+* Paramiko pour la gestion du SSH
+* PyYaml pour la prise en charge du format YAML
+* Jinja2 comme moteur de template
+====
+
+[.topic.source]
+== Inventaire
+~/ansible_hosts
+
+[source,shell]
+----
+[local]
+127.0.0.1
+
+[web-group]
+www.int.monsite.com
+www.prod.monsite.com
+
+[bdd-group]
+10.0.1.123
+----
+
+[NOTE]
+[role="speaker"]
+====
+* L'inventaire contient la liste des groupes, des machines à répartir dedans, et des paramètres correspondant à cet inventaire
+* L'inventaire peut être statique, ou dynamique (cloud et clusters).
+* On utilise différents inventaires pour les différents environnements : test, préprod, prod…
+====
+
+[.topic.source]
+== Les modes d'utilisations 
+
+[.incremental]
+* [icon-note]'{zwsp}' Ad-Hoc
+* [icon-note]'{zwsp}' Playbook
+
+[NOTE]
+[role="speaker"]
+====
+* Ad-Hoc : mode tmux avec commande synchronisé
+* Playbook: éxécution d'un ensemble de tâche à la chef ou puppet (recipe)
+====
+
+[.topic.source]
+== Mode Ad-Hoc
+
+[source,shell]
+----
+$ ansible all -m ping
+$ ansible bdd-group -m ping
+$ ansible all -a "/bin/echo hello world"
+
+$ ansible web-group yum -a "name=tomcat state=installed"
+$ ansible bdd-group service -a "name=mysql state=started"
+----
+
+[NOTE]
+[role="speaker"]
+====
+* mode tmux avec commande synchronisé
+* ansible all -m ping : ping tous les serveurs du groupes
+* ansible bdd-group -m ping : ping tous les serveurs du groupe bdd-group
+* ansible all -a "/bin/echo hello world" : affiche hello world sur tout les serveurs
+* ansible web-group yum -a "name=tomcat state=installed" : installation du paquet tomcat si besoin
+* ansible bdd-group service -a "name=mysql state=started" : démarrage du service mysql si besoin
+====
+
+[.topic.source]
+== Les modules
+
+[.incremental]
+* [icon-note]'{zwsp}' commandes : shell, script
+* [icon-note]'{zwsp}' fichiers : copie, rsync, archive
+* [icon-note]'{zwsp}' monitoring : Nagios, Monit, Logentries
+* [icon-note]'{zwsp}' bases de données : Msyql, PostGre, Redis
+
+[NOTE]
+[role="speaker"]
+====
+* Plutôt que de ré-inventer la roue... module de bases
+====
+
+[.topic.source]
+== Les modules
+
+[.incremental]
+* [icon-note]'{zwsp}' notification : mail, irc, jabber
+* [icon-note]'{zwsp}' gestion de sources : git, svn
+* [icon-note]'{zwsp}' système : mount, cron, lvm, user, ufw
+* [icon-note]'{zwsp}' cloud : Docker, EC2, OpenStack
+
+[NOTE]
+[role="speaker"]
+====
+* Plutôt que de ré-inventer la roue... module de bases
+====
+
+[.topic.source]
+== Mode Playbook
+
+[.incremental]
+* [icon-note]'{zwsp}' Fichier au format YAML
+* [icon-note]'{zwsp}' Suite d'enchaînement de tâches
+* [icon-note]'{zwsp}' Tâche : ensemble d'action utilisant les modules
+
+[NOTE]
+[role="speaker"]
+====
+* L'exécution des tâches s'effectue de manière séquentielle, pour limiter les surprises.
+* Pas de gestion de dépendances et de parallélisation : à faire soi même....
+* Les actions sur un ensemble de machines sont, elles, parallélisées, par lots de tailles raisonnables.
+====
+
+[.topic.source]
+== Mode Playbook
+
+[source,shell]
+----
+
+$ ansible-playbook provsionning --lists-hosts
+----
+
+[NOTE]
+[role="speaker"]
+====
+* Exemple d'installation et de configuration de TMUX
+====
+
+[.topic.source]
+== Notions complémentaires
+
+[.incremental]
+* [icon-note]'{zwsp}' variables
+* [icon-note]'{zwsp}' template
+* [icon-note]'{zwsp}' boucle
+* [icon-note]'{zwsp}' condition
+* [icon-note]'{zwsp}' notification
+
+[NOTE]
+[role="speaker"]
+====
+* variables : défini dans une fichier d'inventaire, dynamiquement
+* template: templating avec Jinja2 : remplacement de variables et de filtre est aussi utilisé dans les fichiers YAML.
+* boucle : par exemple pour itérer sur la liste des paquets à installer
+* condition: conditionner l'éxéction d'une tache en fonction de l'os
+* notification: rédémarrage de service, éxécution de tâches supplémentaires
+====
+
+
+[.topic.source]
+== Pour allez plus loin
+
+[.incremental]
+* [icon-note]'{zwsp}' Ansible galaxy
+
+[NOTE]
+[role="speaker"]
+====
+* Ansible galaxy : repository publique des modules ansible
 ====
 
 [.topic.ending]
