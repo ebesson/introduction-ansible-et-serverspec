@@ -247,6 +247,24 @@ $ ansible bdd-group service -a "name=mysql state=started"
 
 [source,shell]
 ----
+---
+- hosts: web-group
+  vars:
+    http_port: 80
+  remote_user: deployit
+  tasks:
+  - name: ensure apache is at the latest version
+    yum: pkg=httpd state=latest
+  - name: write the apache config file
+    template: src=/srv/httpd.j2 dest=/etc/httpd.conf
+    notify:
+    - restart apache
+  - name: ensure apache is running
+    service: name=httpd state=started
+  handlers:
+    - name: restart apache
+      service: name=httpd state=restarte
+
 
 $ ansible-playbook provsionning --lists-hosts
 ----
@@ -279,16 +297,165 @@ $ ansible-playbook provsionning --lists-hosts
 
 
 [.topic.source]
-== Pour allez plus loin
+== Et après ...
+
+[.statement]
+On teste nos applications +
+Et notre *infrastructure*
+
+[.topic.source]
+== Pourquoi tester notre infrastructure ?
 
 [.incremental]
-* [icon-note]'{zwsp}' Ansible galaxy
+* [icon-note]'{zwsp}' vérifier notre infrastructure 
+* [icon-note]'{zwsp}' fournir une documentation
+* [icon-note]'{zwsp}' éviter les effets de bords 
+
+[NOTE]
+[role="speaker"]
+====
+* vérifier notre infrastructure : ports ouverts, services démarrés, 
+* fournit une documentation : OS, middleware, volumes, réseau, utilisateur, applicatif
+* éviter les effets de bords : post-install, apt-get ugrade, etc...
+====
+
+
+[.topic.source]
+== Un outil ...
+
+[.statement]
+*Serverspec*
+
+[.topic.source]
+== Sous le capot
+
+[.incremental]
+* [icon-note]'{zwsp}' Ruby
+* [icon-note]'{zwsp}' Rspec
+
+[NOTE]
+[role="speaker"]
+====
+* Ruby fonctionne aussi avec JRuby
+* Rspec : bibliothèque ruby qui fournit DSL pour faciliter les tests
+====
+
+[.topic.source]
+==  Ce l'on peux tester
+
+[.incremental]
+* [icon-note]'{zwsp}' services
+* [icon-note]'{zwsp}' port
+* [icon-note]'{zwsp}' paquets
+* [icon-note]'{zwsp}' fichiers
+* [icon-note]'{zwsp}' et plus encore
+
+[NOTE]
+[role="speaker"]
+====
+* et plus : répertoire, user, iptable, commande, groupe,
+====
+
+[.topic.source]
+== En pratique
+
+[source,ruby]
+----
+describe command('whoami') do
+  it { should return_stdout 'root' }
+end
+
+describe service('ntpd') do
+  it { should be_enabled }
+end
+
+describe service('varnish') do
+  it { should be_running }
+end
+
+describe ipnat do
+  it { should have_rule 'map net1 192.168.0.0/24 -> 0.0.0.0/32' }
+end
+----
+
+[NOTE]
+[role="speaker"]
+====
+* Assez simple à écrire
+* Facilement compréhensible
+====
+
+
+[.topic.ending]
+== Pour allez plus loin
+
+
+[.topic.source]
+== Ansible galaxy
+
+image::galaxy_logo_main.png[height=185]
+....
+galaxy.ansible.com
+.... 
+
 
 [NOTE]
 [role="speaker"]
 ====
 * Ansible galaxy : repository publique des modules ansible
 ====
+
+[.topic.source]
+== Packer.io
+
+image::mitchellh_24702982422030_small.png[width=500]
+....
+packer.io
+.... 
+
+
+[NOTE]
+[role="speaker"]
+====
+* outil d'images de machine dans différents formarts : EC2, Docker, Openstack, KVM, Vmware, Virtualbox
+* module de provisionning pour ansible
+====
+
+[.topic.source]
+== Packer
+
+image::mitchellh_24702982422030_small.png[width=600]
+....
+oacker.io
+.... 
+
+
+[NOTE]
+[role="speaker"]
+====
+* outil d'images de machine dans différents formarts : EC2, Docker, Openstack, KVM, Vmware, Virtualbox
+* module de provisionning pour ansible
+====
+
+
+[.topic.source]
+== Jenkins
+
+image::jenkins_logo.png[width=500]
+....
+jenkins-ci.org
+.... 
+
+
+[NOTE]
+[role="speaker"]
+====
+* tests avec serverspec
+* job jenkins pour la génération d'images
+* job jenkins pour provisionner ou mettre à jour un ensemble de machine
+====
+
+
 
 [.topic.ending]
 == Questions
