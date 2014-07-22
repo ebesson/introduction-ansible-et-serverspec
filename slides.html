@@ -1,0 +1,105 @@
+<!DOCTYPE html><html lang="en" class="aspect-16-9"><head><meta charset="UTF-8"><meta name="generator" content="Asciidoctor 0.1.4, dzslides backend"><title>Introduction à Ansible et Serverspec</title><meta name="author" content="Etienne BESSON"><link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton:400,700,800,400italic|Cedarville+Cursive"><link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css"><link rel="stylesheet" href="./dzslides/themes/highlight/asciidoctor.css"><link rel="stylesheet" href="./dzslides/themes/style/asciidoctor.css"><style>section:not(.topic) > h2 { display: none;}</style><link rel="stylesheet" href="./dzslides/core/dzslides.css"><link rel="stylesheet" href="./dzslides/themes/transition/fade.css"></head><body><section class="title"><h1>Introduction à <em>Ansible</em> et <em>Serverspec</em></h1><footer><span class="author">Etienne BESSON</span></footer></section><section class="topic source"><h2>Agenda</h2><div class="exampleblock"><div class="content"><ul class="incremental"><li><em class="icon-note">&#8203;</em> Ansible</li><li><em class="icon-note">&#8203;</em> Serverspec</li><li><em class="icon-note">&#8203;</em> Allez plus loin</li></ul></div></div>
+<details><details open=""><summary>Notes</summary><ul><li>Bla bla</li></ul></details></details></section>
+<section><img class="topic intro" src="images/6819858446_f69c2caa52.jpg" alt="6819858446 f69c2caa52" width="500">
+<div class="literalblock"><pre class="literal">flickr.com/photos/unephotos/6819858446</pre></div>
+<details><details open=""><summary>Notes</summary><ul><li>Bla bla</li></ul></details></details></section>
+<section class="topic source"><h2>Pour le provisionning et l&#8217;administration</h2><p>Utilisation de <em>scripts shell</em> couplés au <em>protocle SSH</em></p>
+<img src="images/ssh.jpg" alt="ssh" height="264">
+<div class="literalblock"><pre class="literal">frans-web.com</pre></div>
+<details><details open=""><summary>Notes</summary><ul><li>Pour provisionner une machine machine distante</li><li>Pour administrer une machine machine distante</li><li>Pour administrer un parc de serveur : tmux synchronisation de commandes sur différents serveurs</li></ul></details></details></section>
+<section><img src="images/Borat_in_Cologne.jpg" alt="Borat in Cologne">
+<div class="literalblock"><pre class="literal">frans-web.com</pre></div>
+<details><details open=""><summary>Notes</summary><ul><li>C&#8217;est une blague</li></ul></details></details></section>
+<section class="topic source"><h2>Les problèmes</h2><ul class="incremental"><li>- Complexe</li><li>- Robustesse</li><li>- Idempotence</li></ul>
+<details><details open=""><summary>Notes</summary><ul><li>Complexe : maintenance souvent pas évident, scripts non commentés</li><li>Robustesse : gestion des erreurs, validaton des paramètres entrées, etc&#8230;</li><li>Non idempotence : on doit toujours avoir le système dans le même état si on appel les scripts plusieurs fois</li></ul></details></details></section>
+<section class="topic source"><h2>Les solutions</h2><ul class="incremental"><li>- système à base d&#8217;agent ou de démon</li><li>- système qui maintient l'état du serveur dans une base de données</li></ul>
+<details><details open=""><summary>Notes</summary><ul><li>système à base d&#8217;agent  : on déploie un logiciel sur le serveur</li><li>système avec base de donnée : problèmatique de la base qui crash, migration</li></ul></details></details></section>
+<section class="topic source"><h2>De quoi a-t-on besoin ?</h2><p class="statement">D&#8217;une solution <strong>simple</strong> et<br>
+compréh <strong>Ansible</strong></p>
+<details><details open=""><summary>Notes</summary><ul><li>solution basées sur les clés SSH et sans base de données</li></ul></details></details></section>
+<section class="topic source"><h2>Sous le capot</h2><ul class="incremental"><li><em class="icon-note">&#8203;</em> Python</li><li><em class="icon-note">&#8203;</em> Paramiko</li><li><em class="icon-note">&#8203;</em> PyYaml</li><li><em class="icon-note">&#8203;</em> Jinja2</li></ul>
+<details><details open=""><summary>Notes</summary><ul><li>Python version supérieure ou égale à 2.6</li><li>Paramiko pour la gestion du SSH</li><li>PyYaml pour la prise en charge du format YAML</li><li>Jinja2 comme moteur de template</li></ul></details></details></section>
+<section class="topic source"><h2>Inventaire</h2><p>~/ansible_hosts</p>
+<div class="listingblock"><pre class="highlight CodeRay"><code class="shell">[local]
+127.0.0.1
+
+[web-group]
+www.int.monsite.com
+www.prod.monsite.com
+
+[bdd-group]
+10.0.1.123</code></pre></div>
+<details><details open=""><summary>Notes</summary><ul><li>L&#8217;inventaire contient la liste des groupes, des machines à répartir dedans, et des paramètres correspondant à cet inventaire</li><li>L&#8217;inventaire peut être statique, ou dynamique (cloud et clusters).</li><li>On utilise différents inventaires pour les différents environnements : test, préprod, prod…</li></ul></details></details></section>
+<section class="topic source"><h2>Les modes d&#8217;utilisations</h2><ul class="incremental"><li><em class="icon-note">&#8203;</em> Ad-Hoc</li><li><em class="icon-note">&#8203;</em> Playbook</li></ul>
+<details><details open=""><summary>Notes</summary><ul><li>Ad-Hoc : mode tmux avec commande synchronisé</li><li>Playbook: éxécution d&#8217;un ensemble de tâche à la chef ou puppet (recipe)</li></ul></details></details></section>
+<section class="topic source"><h2>Mode Ad-Hoc</h2><div class="listingblock"><pre class="highlight CodeRay"><code class="shell">$ ansible all -m ping
+$ ansible bdd-group -m ping
+$ ansible all -a "/bin/echo hello world"
+
+$ ansible web-group yum -a "name=tomcat state=installed"
+$ ansible bdd-group service -a "name=mysql state=started"</code></pre></div>
+<details><details open=""><summary>Notes</summary><ul><li>mode tmux avec commande synchronisé</li><li>ansible all -m ping : ping tous les serveurs du groupes</li><li>ansible bdd-group -m ping : ping tous les serveurs du groupe bdd-group</li><li>ansible all -a "/bin/echo hello world" : affiche hello world sur tout les serveurs</li><li>ansible web-group yum -a "name=tomcat state=installed" : installation du paquet tomcat si besoin</li><li>ansible bdd-group service -a "name=mysql state=started" : démarrage du service mysql si besoin</li></ul></details></details></section>
+<section class="topic source"><h2>Les modules</h2><ul class="incremental"><li><em class="icon-note">&#8203;</em> commandes : shell, script</li><li><em class="icon-note">&#8203;</em> fichiers : copie, rsync, archive</li><li><em class="icon-note">&#8203;</em> monitoring : Nagios, Monit, Logentries</li><li><em class="icon-note">&#8203;</em> bases de données : Msyql, PostGre, Redis</li></ul>
+<details><details open=""><summary>Notes</summary><ul><li>Plutôt que de ré-inventer la roue&#8230; module de bases</li></ul></details></details></section>
+<section class="topic source"><h2>Les modules</h2><ul class="incremental"><li><em class="icon-note">&#8203;</em> notification : mail, irc, jabber</li><li><em class="icon-note">&#8203;</em> gestion de sources : git, svn</li><li><em class="icon-note">&#8203;</em> système : mount, cron, lvm, user, ufw</li><li><em class="icon-note">&#8203;</em> cloud : Docker, EC2, OpenStack</li></ul>
+<details><details open=""><summary>Notes</summary><ul><li>Plutôt que de ré-inventer la roue&#8230; module de bases</li></ul></details></details></section>
+<section class="topic source"><h2>Mode Playbook</h2><ul class="incremental"><li><em class="icon-note">&#8203;</em> Fichier au format YAML</li><li><em class="icon-note">&#8203;</em> Suite d&#8217;enchaînement de tâches</li><li><em class="icon-note">&#8203;</em> Tâche : ensemble d&#8217;action utilisant les modules</li></ul>
+<details><details open=""><summary>Notes</summary><ul><li>L&#8217;exécution des tâches s&#8217;effectue de manière séquentielle, pour limiter les surprises.</li><li>Pas de gestion de dépendances et de parallélisation : à faire soi même&#8230;.</li><li>Les actions sur un ensemble de machines sont, elles, parallélisées, par lots de tailles raisonnables.</li></ul></details></details></section>
+<section class="topic source"><h2>Mode Playbook</h2><div class="listingblock"><pre class="highlight CodeRay"><code class="shell">---
+- hosts: web-group
+  vars:
+    http_port: 80
+  remote_user: deployit
+  tasks:
+  - name: ensure apache is at the latest version
+    yum: pkg=httpd state=latest
+  - name: write the apache config file
+    template: src=/srv/httpd.j2 dest=/etc/httpd.conf
+    notify:
+    - restart apache
+  - name: ensure apache is running
+    service: name=httpd state=started
+  handlers:
+    - name: restart apache
+      service: name=httpd state=restarte
+
+$ ansible-playbook provsionning --lists-hosts</code></pre></div>
+<details><details open=""><summary>Notes</summary><ul><li>Exemple d&#8217;installation et de configuration de TMUX</li></ul></details></details></section>
+<section class="topic source"><h2>Notions complémentaires</h2><ul class="incremental"><li><em class="icon-note">&#8203;</em> variables</li><li><em class="icon-note">&#8203;</em> template</li><li><em class="icon-note">&#8203;</em> boucle</li><li><em class="icon-note">&#8203;</em> condition</li><li><em class="icon-note">&#8203;</em> notification</li></ul>
+<details><details open=""><summary>Notes</summary><ul><li>variables : défini dans une fichier d&#8217;inventaire, dynamiquement</li><li>template: templating avec Jinja2 : remplacement de variables et de filtre est aussi utilisé dans les fichiers YAML.</li><li>boucle : par exemple pour itérer sur la liste des paquets à installer</li><li>condition: conditionner l'éxéction d&#8217;une tache en fonction de l&#8217;os</li><li>notification: rédémarrage de service, éxécution de tâches supplémentaires</li></ul></details></details></section>
+<section class="topic source"><h2>Et après &#8230;</h2><p class="statement">On teste nos applications<br>
+Et notre <strong>infrastructure</strong></p></section>
+<section class="topic source"><h2>Pourquoi tester notre infrastructure ?</h2><ul class="incremental"><li><em class="icon-note">&#8203;</em> vérifier notre infrastructure</li><li><em class="icon-note">&#8203;</em> fournir une documentation</li><li><em class="icon-note">&#8203;</em> éviter les effets de bords</li></ul>
+<details><details open=""><summary>Notes</summary><ul><li>vérifier notre infrastructure : ports ouverts, services démarrés,</li><li>fournit une documentation : OS, middleware, volumes, réseau, utilisateur, applicatif</li><li>éviter les effets de bords : post-install, apt-get ugrade, etc&#8230;</li></ul></details></details></section>
+<section class="topic source"><h2>Un outil &#8230;</h2><p class="statement"><strong>Serverspec</strong></p></section>
+<section class="topic source"><h2>Sous le capot</h2><ul class="incremental"><li><em class="icon-note">&#8203;</em> Ruby</li><li><em class="icon-note">&#8203;</em> Rspec</li></ul>
+<details><details open=""><summary>Notes</summary><ul><li>Ruby fonctionne aussi avec JRuby</li><li>Rspec : bibliothèque ruby qui fournit DSL pour faciliter les tests</li></ul></details></details></section>
+<section class="topic source"><h2>Ce l&#8217;on peut tester</h2><ul class="incremental"><li><em class="icon-note">&#8203;</em> services</li><li><em class="icon-note">&#8203;</em> ports</li><li><em class="icon-note">&#8203;</em> paquets</li><li><em class="icon-note">&#8203;</em> fichiers</li><li><em class="icon-note">&#8203;</em> et plus encore</li></ul>
+<details><details open=""><summary>Notes</summary><ul><li>et plus : répertoire, user, iptable, commande, groupe,</li></ul></details></details></section>
+<section class="topic source"><h2>En pratique</h2><div class="listingblock"><pre class="highlight CodeRay"><code class="ruby">describe command('whoami') do
+  it { should return_stdout 'root' }
+end
+
+describe service('ntpd') do
+  it { should be_enabled }
+end
+
+describe service('varnish') do
+  it { should be_running }
+end
+
+describe ipnat do
+  it { should have_rule 'map net1 192.168.0.0/24 -&gt; 0.0.0.0/32' }
+end</code></pre></div>
+<details><details open=""><summary>Notes</summary><ul><li>Assez simple à écrire</li><li>Facilement compréhensible</li></ul></details></details></section>
+<section class="topic ending"><h2>Pour allez plus loin</h2></section>
+<section class="topic source"><h2>Ansible galaxy</h2><img src="images/galaxy_logo_main.png" alt="galaxy logo main" height="185">
+<div class="literalblock"><pre class="literal">galaxy.ansible.com</pre></div>
+<details><details open=""><summary>Notes</summary><ul><li>Ansible galaxy : repository publique des modules ansible</li></ul></details></details></section>
+<section class="topic source"><h2>Packer</h2><img src="images/mitchellh_24702982422030_small.png" alt="mitchellh 24702982422030 small" width="500">
+<div class="literalblock"><pre class="literal">packer.io</pre></div>
+<details><details open=""><summary>Notes</summary><ul><li>outil d&#8217;images de machine dans différents formarts : EC2, Docker, Openstack, KVM, Vmware, Virtualbox</li><li>module de provisionning pour ansible</li></ul></details></details></section>
+<section class="topic source"><h2>Jenkins</h2><img src="images/jenkins_logo.png" alt="jenkins logo" width="500">
+<div class="literalblock"><pre class="literal">jenkins-ci.org</pre></div>
+<details><details open=""><summary>Notes</summary><ul><li>tests avec serverspec</li><li>job jenkins pour la génération d&#8217;images</li><li>job jenkins pour provisionner ou mettre à jour un ensemble de machine</li></ul></details></details></section>
+<section class="topic ending"><h2>Questions</h2></section><script src="./dzslides/core/dzslides.js"></script><script src="./dzslides/highlight/highlight.pack.js"></script><script>hljs.initHighlightingOnLoad()</script></body></html>
