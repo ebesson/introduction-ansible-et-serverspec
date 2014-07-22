@@ -265,7 +265,6 @@ $ ansible bdd-group service -a "name=mysql state=started"
     - name: restart apache
       service: name=httpd state=restarte
 
-
 $ ansible-playbook provsionning --lists-hosts
 ----
 
@@ -341,11 +340,11 @@ Et notre *infrastructure*
 ====
 
 [.topic.source]
-==  Ce l'on peux tester
+==  Ce l'on peut tester
 
 [.incremental]
 * [icon-note]'{zwsp}' services
-* [icon-note]'{zwsp}' port
+* [icon-note]'{zwsp}' ports
 * [icon-note]'{zwsp}' paquets
 * [icon-note]'{zwsp}' fichiers
 * [icon-note]'{zwsp}' et plus encore
@@ -406,29 +405,12 @@ galaxy.ansible.com
 ====
 
 [.topic.source]
-== Packer.io
+== Packer
 
 image::mitchellh_24702982422030_small.png[width=500]
 ....
 packer.io
 .... 
-
-
-[NOTE]
-[role="speaker"]
-====
-* outil d'images de machine dans différents formarts : EC2, Docker, Openstack, KVM, Vmware, Virtualbox
-* module de provisionning pour ansible
-====
-
-[.topic.source]
-== Packer
-
-image::mitchellh_24702982422030_small.png[width=600]
-....
-oacker.io
-.... 
-
 
 [NOTE]
 [role="speaker"]
