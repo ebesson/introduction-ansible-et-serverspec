@@ -1,0 +1,370 @@
+{
+  "title": "Java 8 : Lambda et Stream",
+  "id": 1,
+  "formatVersion": 2,
+  "attr": {
+    "style": {}
+  },
+  "ideas": {
+    "21": {
+      "title": "A quoi ca peut servir",
+      "id": 4,
+      "ideas": {
+        "1": {
+          "title": "Interface fonctionnelles",
+          "id": 50,
+          "ideas": {},
+          "attr": {
+            "attachment": {
+              "contentType": "text/html",
+              "content": "Dans le JDK apparition du package java.util.function:<div><ul><li>Consumer&lt;T&gt; : void accept(T); &nbsp;=&gt; Afficher une valeur&nbsp;</li><li>Function&lt;T, R&gt; : R apply(T); =&gt; Faire une transformation</li><li>Supplier&lt;T&gt; : T get(); =&gt; Factory</li><li>Predicate : boolean test(T); =&gt; Est ce que la propriete est vrai</li></ul></div>"
+            },
+            "style": {}
+          }
+        },
+        "2": {
+          "title": "Faciliter la manipulation sur les collections",
+          "id": 52,
+          "ideas": {
+            "1": {
+              "title": "Filtrer",
+              "id": 53,
+              "ideas": {
+                "1": {
+                  "title": "Exemple",
+                  "id": 72,
+                  "attr": {
+                    "style": {}
+                  }
+                }
+              }
+            },
+            "2": {
+              "title": "Transformer",
+              "id": 54,
+              "ideas": {
+                "1": {
+                  "title": "Exemple",
+                  "id": 73,
+                  "attr": {
+                    "style": {}
+                  }
+                }
+              }
+            },
+            "3": {
+              "title": "Reduire",
+              "id": 55,
+              "ideas": {
+                "1": {
+                  "title": "Principe de l'accumulation",
+                  "id": 70
+                },
+                "2": {
+                  "title": "Exemple",
+                  "id": 74,
+                  "attr": {
+                    "style": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "22": {
+      "title": "Lambda",
+      "id": 42,
+      "ideas": {
+        "1": {
+          "title": "Principe",
+          "id": 43
+        },
+        "2": {
+          "title": "Syntaxe",
+          "id": 44,
+          "ideas": {},
+          "attr": {
+            "attachment": {
+              "contentType": "text/html",
+              "content": "<div>Lambda block</div><div>() -&gt; { return 0; }</div><div>x -&gt; { return x; }</div><div>(x, y) -&gt; { return x + y; }</div><div>Lambda expression</div><div>() -&gt; 0</div><div>x -&gt; x</div><div>(x, y) -&gt; x + y</div>"
+            },
+            "style": {}
+          }
+        },
+        "3": {
+          "title": "A retenir",
+          "id": 45,
+          "attr": {
+            "attachment": {
+              "contentType": "text/html",
+              "content": "<div><ul><li>A Method Reference is a named method that can be converted to a value</li><li>A lambda is an anonymous function that can be converted to a value</li></ul></div>"
+            },
+            "style": {}
+          }
+        }
+      },
+      "attr": {
+        "collapsed": true,
+        "style": {}
+      }
+    },
+    "-0.25": {
+      "title": "Exemple  : lecture et affichage d'un entier dans un fichier",
+      "id": 8,
+      "attr": {
+        "attachment": {
+          "contentType": "text/html",
+          "content": "<div>static void printIntegers(Path path) throws IOException {</div><div>try(BufferedReader reader = Files.newBufferedReader(path)) {</div><div>String line;</div><div>while ((line = reader.readLine()) != null) {</div><div>System.out.println(Integer.parseInt(line));</div><div>}</div>"
+        },
+        "style": {}
+      },
+      "ideas": {}
+    },
+    "-0.375": {
+      "title": "Exemple : lecture et affichage d'un double dans un fichier",
+      "id": 22,
+      "attr": {
+        "attachment": {
+          "contentType": "text/html",
+          "content": "<br><div style=\"height: 422px;\" id=\"attachEditArea\" data-mm-role=\"editor\" contenteditable=\"false\"><div>static void printIntegers(Path path) throws IOException {</div><div>try(BufferedReader reader = Files.newBufferedReader(path)) {</div><div>String line;</div><div>while ((line = reader.readLine()) != null) {</div><div>System.out.println(Integer.parseInt(line));</div><div>}</div></div>"
+        },
+        "style": {}
+      }
+    },
+    "-1.375": {
+      "title": "Comment simplifier le code:",
+      "attr": {
+        "attachment": {
+          "contentType": "text/html",
+          "content": "Deux notions dans ce bout de code :<div><ul><li>Code technique</li><li>Code fonctionnel</li></ul><div>=&gt; Utilisation d'une classe anoynme &nbsp;???</div><div><br></div></div>"
+        },
+        "style": {},
+        "collapsed": true
+      },
+      "ideas": {
+        "1": {
+          "title": "Classe anoynme",
+          "ideas": {
+            "1": {
+              "title": "Problemes",
+              "ideas": {
+                "1": {
+                  "title": "Verbositité",
+                  "id": 26
+                },
+                "2": {
+                  "title": "Performances",
+                  "ideas": {
+                    "1": {
+                      "title": "Creation d'un objet en mémoire",
+                      "id": 28
+                    },
+                    "2": {
+                      "title": "Meta-data asssociee",
+                      "id": 29
+                    }
+                  },
+                  "id": 27
+                },
+                "3": {
+                  "title": "Semantique",
+                  "attr": {
+                    "attachment": {
+                      "contentType": "text/html",
+                      "content": "On veux envoyer une envoyer une expression... on cree une classe"
+                    },
+                    "style": {}
+                  },
+                  "ideas": {},
+                  "id": 30
+                }
+              },
+              "id": 25
+            }
+          },
+          "id": 24
+        }
+      },
+      "id": 23
+    },
+    "-11.375": {
+      "title": "En résumé",
+      "id": 31,
+      "attr": {
+        "attachment": {
+          "contentType": "text/html",
+          "content": "<div>static void parseLines(Path path, XXX xxx) throws IOException {</div><div>try(BufferedReader reader = Files.newBufferedReader(path)) {</div><div>String line;</div><div>while ((line = reader.readLine()) != null) {</div><div>xxx(line);</div><div>}</div><div>}</div><div>}</div><div>static void printOneLine(String line) {</div><div>System.out.println(Integer.parseInt(line));</div><div>}</div><div>static void printIntegers(Path path) throws ... {</div><div>parseLines(path, ???);</div><div>}</div>"
+        },
+        "style": {},
+        "collapsed": true
+      },
+      "ideas": {
+        "1": {
+          "title": "Une fonction de type XXX",
+          "id": 33,
+          "attr": {
+            "attachment": {
+              "contentType": "text/html",
+              "content": "String -&gt; void"
+            },
+            "style": {}
+          },
+          "ideas": {}
+        },
+        "2": {
+          "title": "Un moyen d appeler la fonction",
+          "id": 36,
+          "attr": {
+            "attachment": {
+              "contentType": "text/html",
+              "content": "Appel de xxx()"
+            },
+            "style": {}
+          }
+        },
+        "3": {
+          "title": "Un moyen de transformer une methode en valeur",
+          "id": 37,
+          "attr": {
+            "attachment": {
+              "contentType": "text/html",
+              "content": "<div>parseLines(path, &amp;printOneLine)</div><div>Notion d' eta conversion</div>"
+            },
+            "style": {}
+          }
+        }
+      }
+    },
+    "-21.375": {
+      "title": "La solution : closure",
+      "id": 38,
+      "ideas": {
+        "1": {
+          "title": "Interface fonctionnelles",
+          "id": 39,
+          "attr": {
+            "attachment": {
+              "contentType": "text/html",
+              "content": "Avoir un type \"Fonction\" existe deja, exemple Runnable -&gt; methode run()<div><br></div><div>Definition d'une interface fonctionnelle :</div><div><ul><li>une methode abstraite</li><li><li>annotation @FunctionalInterface</li><li>on peux avoir une methode \"default\" qui contient l'implementation par defaut</li></li></ul></div>"
+            },
+            "style": {}
+          }
+        },
+        "2": {
+          "title": "Appel de fonction : creation d'une instance : XXX.xxx()",
+          "id": 40
+        },
+        "3": {
+          "title": "Methode reference",
+          "id": 41,
+          "attr": {
+            "attachment": {
+              "contentType": "text/html",
+              "content": "<div>Définition de l'Eta conversion : transformation d une reference a une methode en une valeur</div><div><br></div><div>Nouvelle operateur :: (coloncolon)</div>"
+            },
+            "style": {}
+          },
+          "ideas": {
+            "1": {
+              "title": "Definition",
+              "id": 46
+            },
+            "2": {
+              "title": "Exemples",
+              "id": 48,
+              "attr": {
+                "attachment": {
+                  "contentType": "text/html",
+                  "content": "<ul><li>Reference vers un constructeur : Classe::new</li><li>Reference vers une methode statique : Integer::parseInt</li><li>Reference vers une methode d instance : factory::creatPerson</li></ul>"
+                },
+                "style": {}
+              }
+            }
+          }
+        }
+      },
+      "attr": {
+        "collapsed": true,
+        "style": {}
+      }
+    },
+    "10.5": {
+      "title": "En  attendant Java 8",
+      "id": 56,
+      "ideas": {
+        "1": {
+          "title": "Guava",
+          "id": 57
+        }
+      }
+    },
+    "15.75": {
+      "title": "API Stream",
+      "id": 60,
+      "ideas": {
+        "1": {
+          "title": "Defintion",
+          "id": 62,
+          "attr": {
+            "attachment": {
+              "contentType": "text/html",
+              "content": "Nouveau package dans le JDK : java.util.stream<div><br><div>public interface Stream&lt;T&gt; extends BaseStream&lt;T,Stream&lt;T&gt;&gt;</div><div><br></div></div><div>Intérêt : objet pour traiter des volumes de donnees :</div><div><ul><li>Definit des operations&nbsp;</li><li>Ne contient pas les donnees qu'il traite&nbsp;</li><li>Ne modifie jamais les donnees qu'il traite (source de donnees)</li><li>optimisation algorithmique</li></ul></div><div><br></div><div>Pourquoi ne pas avoir rajouter cette notion dans l'API collection :</div><div><ul><li>Retrocompatibilite avec version precedente de Java</li><li>SRP : Single Responsability Principe</li></ul></div>"
+            },
+            "style": {}
+          },
+          "ideas": {
+            "1": {
+              "title": "Parallele",
+              "id": 63,
+              "ideas": {},
+              "attr": {
+                "attachment": {
+                  "contentType": "text/html",
+                  "content": "pour utiliser tous les coeurs de processeurs<div>pour allez plus vite sur les gros volumes de donnees</div>"
+                },
+                "style": {}
+              }
+            },
+            "2": {
+              "title": "Sequentiel",
+              "id": 64,
+              "ideas": {},
+              "attr": {
+                "attachment": {
+                  "contentType": "text/html",
+                  "content": "Pipeline (TODO schema) : suppression des etapes intermediaires"
+                },
+                "style": {}
+              }
+            }
+          }
+        },
+        "0.5": {
+          "title": "Exemple",
+          "id": 68
+        },
+        "0.75": {
+          "title": "Defintion (suite)",
+          "id": 69,
+          "attr": {
+            "attachment": {
+              "contentType": "text/html",
+              "content": "On peux definir deux type d'operations :<div><ul><li>intermediaire retourne un Stream&lt;T&gt;:</li><ul><li>filter</li><li>map</li><li>etc...</li></ul><li>terminale retourne un objet (operation qui declenche le traitement)</li><ul><li>collect</li><li>reduce</li><li>count</li><li>min</li><li>etc...</li></ul></ul></div>"
+            },
+            "style": {}
+          }
+        },
+        "0.25": {
+          "title": "Refactoring mode d'emploi",
+          "id": 81
+        }
+      },
+      "attr": {
+        "style": {}
+      }
+    }
+  },
+  "links": []
+}
